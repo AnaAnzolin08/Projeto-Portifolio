@@ -1,6 +1,6 @@
 
 
-# Aplicação Pet Walker App — Express + LocalStorage (sem banco)
+# Aplicação Pet  para agendar passeio para o pet -  Express + LocalStorage (sem banco)
 
 Aplicação web para agendar passeios de pets e manter o histórico no LocalStorage do navegador. O servidor Express apenas serve arquivos estáticos.
 
