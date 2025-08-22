@@ -1,3 +1,22 @@
+
+
+# Aplicação Pet Walker App — Express + LocalStorage (sem banco)
+
+Aplicação web para agendar passeios de pets e manter o histórico no LocalStorage do navegador. O servidor Express apenas serve arquivos estáticos.
+
+## Requisitos
+- Node.js 18+
+- npm
+
+## Como executar
+```bash
+npm install
+npm start
+# abra http://localhost:3000
+
+
+
+
 ## Estrutura do Projeto
 
 ```
