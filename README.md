@@ -58,8 +58,7 @@ Os dados dos passeios são armazenados localmente no navegador:
 - **Chave:** `passeio:rides`
 - **Estrutura do item:**
 ```json
-{ "id": "...", "date": "YYYY-MM-DD", "time": "HH:mm", "createdAt": "ISODate", "status": "scheduled|running|finished", "endTime": "ISODate|null", "duration": "ms|number" }
-```
+
 
 ---
 
