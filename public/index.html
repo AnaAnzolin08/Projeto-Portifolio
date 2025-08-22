@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador de Passeios do Pet</title>
+    <!-- Tailwind CSS CDN para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Importa a fonte Inter do Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #A367B1; /* Cor de fundo vibrante */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+        }
+        .container {
+            background-color: #f5f5dc; /* Cor de fundo bege claro */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            color: #4b0082;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .header-emoji {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-fields {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .input-group {
+            position: relative;
+            flex: 1;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            color: #555;
+            cursor: pointer;
+        }
+        .input-group .icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            cursor: pointer;
+        }
+        .btn {
+            padding: 0.75rem 1rem;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex: 1;
+        }
+        .btn-schedule {
+            background-color: #6a5acd;
+        }
+        .btn-schedule:hover {
+            background-color: #5a4ab3;
+        }
+        .btn-now {
+            background-color: #28a745;
+        }
+        .btn-now:hover {
+            background-color: #218838;
+        }
+        .btn-finalizar {
+            background-color: #dc3545;
+        }
+        .btn-finalizar:hover {
+            background-color: #c82333;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #message-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+        }
+        #history-box {
+            margin-top: 2rem;
+            text-align: left;
+        }
+        .history-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .history-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 1rem;
+        }
+        .history-list-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #4b0082;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 1rem;
+        }
+        .month-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4b0082;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .history-list-month {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .history-list-month li {
+            background-color: #e9ecef;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border-left: 5px solid #6c757d;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s;
+        }
+        .history-list-month li:hover {
+            background-color: #dce0e4;
+        }
+        .history-scheduled {
+            border-left-color: #6c757d;
+        }
+        .history-concluido {
+            border-left-color: #6c757d;
+        }
+        .title-btn {
+            padding: 0;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #4b0082;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 1rem;
+        }
+        .title-btn:hover {
+            color: #7a3aa6;
+        }
+        /* Estilos para o botão de exclusão flutuante */
+        .delete-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .history-list-month li:hover .delete-btn {
+            opacity: 1;
+        }
+        #clear-history-btn {
+            background-color: #6c757d;
+            margin-top: 1rem;
+            width: auto;
+        }
+        #clear-history-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <span class="header-emoji">🐾🐶🐱</span>Gerenciador de Passeio Pet
+    </div>
+    <p>Escolha a data e o horário para agendar um passeio.</p>
+    <div class="form-fields">
+        <div class="input-group">
+            <input type="date" id="walk-date" name="walk-date">
+            <span class="icon" onclick="document.getElementById('walk-date').showPicker()">&#128197;</span>
+        </div>
+        <div class="input-group">
+            <input type="time" id="walk-time" name="walk-time">
+            <span class="icon" onclick="document.getElementById('walk-time').showPicker()">&#128337;</span>
+        </div>
+    </div>
+    <!-- Container para todos os botões de ação -->
+    <div class="flex justify-between items-center gap-4 mb-2" id="action-buttons-container">
+        <button class="btn btn-schedule" id="schedule-btn">Agendar Passeio</button>
+        <button class="btn btn-now" id="start-btn">Iniciar Agora</button>
+        <button class="btn btn-finalizar" id="finalizar-btn" disabled>Finalizar Passeio</button>
+    </div>
+
+    <div id="message-box"></div>
+
+    <div id="history-box">
+        <h3>Histórico de Passeios</h3>
+
+        <!-- Estrutura do histórico de passeios, com apenas duas seções -->
+        <div class="history-grid">
+            <div id="scheduled-history-section" class="history-section">
+                <button class="history-list-title title-btn">Passeios Agendados</button>
+                <div id="scheduled-list" class="mt-2"></div>
+            </div>
+            <div id="active-history-section" class="history-section">
+                <button class="history-list-title title-btn">Histórico de Passeios</button>
+                <div id="active-list" class="mt-2"></div>
+            </div>
+        </div>
+        <button class="btn" id="clear-history-btn">Limpar Histórico</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dataInput = document.getElementById('walk-date');
+        const timeInput = document.getElementById('walk-time');
+        const scheduleButton = document.getElementById('schedule-btn');
+        const startNowButton = document.getElementById('start-btn');
+        const finalizarButton = document.getElementById('finalizar-btn');
+        const messageBox = document.getElementById('message-box');
+        const clearHistoryButton = document.getElementById('clear-history-btn');
+        
+        const scheduledList = document.getElementById('scheduled-list');
+        const activeList = document.getElementById('active-list');
+
+        let scheduledWalks = [];
+        let completedWalks = [];
+        let currentWalkStartTimestamp = null;
+        let walkCheckInterval = null;
+
+        // Função para formatar a data para exibição
+        function formatDate(dateString) {
+            const [year, month, day] = dateString.split('-');
+            return `${day}/${month}/${year}`;
+        }
+
+        // Função para verificar e remover passeios agendados que já passaram da data/hora
+        function cleanUpOldWalks() {
+            const now = new Date();
+            // A lista de agendados é filtrada para manter apenas os passeios futuros
+            scheduledWalks = scheduledWalks.filter(item => {
+                const walkDateTime = new Date(`${item.date}T${item.time}`);
+                return walkDateTime > now;
+            });
+        }
+
+        // Função para renderizar o histórico na tela
+        function renderHistory() {
+            // Limpa os elementos de lista existentes para evitar duplicações
+            scheduledList.innerHTML = '';
+            activeList.innerHTML = '';
+
+            // Remove passeios agendados que já passaram da data
+            cleanUpOldWalks();
+
+            // Função auxiliar para renderizar uma seção de histórico
+            function renderSection(data, container, type) {
+                // Agrupa os itens por mês e ano para exibição organizada
+                const groupedByMonth = {};
+                data.forEach(item => {
+                    // Cria uma data local a partir da string para o agrupamento
+                    const date = new Date(`${item.date}T00:00:00`);
+                    const monthYear = date.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+                    if (!groupedByMonth[monthYear]) {
+                        groupedByMonth[monthYear] = [];
+                    }
+                    groupedByMonth[monthYear].push(item);
+                });
+
+                // Renderiza cada grupo de mês
+                for (const monthYear in groupedByMonth) {
+                    const monthHeader = document.createElement('h5');
+                    monthHeader.className = 'month-header';
+                    monthHeader.textContent = monthYear.charAt(0).toUpperCase() + monthYear.slice(1);
+                    container.appendChild(monthHeader);
+
+                    const monthlyList = document.createElement('ul');
+                    monthlyList.className = 'history-list-month';
+                    groupedByMonth[monthYear].forEach(item => {
+                        const li = document.createElement('li');
+                        li.setAttribute('data-timestamp', item.timestamp);
+                        li.setAttribute('data-type', type);
+
+                        if (type === 'completed') {
+                            li.innerHTML = `Passeio concluído em ${formatDate(item.date)} (${item.durationInMinutes} min)`;
+                            li.className = 'history-concluido';
+                        } else {
+                            li.innerHTML = `Passeio agendado para ${formatDate(item.date)} às ${item.time}`;
+                            li.className = 'history-scheduled';
+                        }
+                        
+                        // Botão de exclusão flutuante
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.textContent = 'Excluir';
+                        deleteBtn.className = 'delete-btn';
+                        li.appendChild(deleteBtn);
+
+                        // Event listener para excluir o item
+                        deleteBtn.addEventListener('click', (event) => {
+                            event.stopPropagation();
+                            
+                            // Exclui o item da lista apropriada (agendados ou concluídos)
+                            if (type === 'scheduled') {
+                                scheduledWalks = scheduledWalks.filter(walk => walk.timestamp !== item.timestamp);
+                            } else {
+                                completedWalks = completedWalks.filter(walk => walk.timestamp !== item.timestamp);
+                            }
+                            renderHistory(); // Re-renderiza a lista para refletir a exclusão
+                            messageBox.textContent = 'Passeio removido com sucesso!';
+                            messageBox.style.backgroundColor = '#ffe7d9';
+                            messageBox.style.color = '#8b4b00';
+                            messageBox.style.display = 'block';
+                        });
+
+                        monthlyList.appendChild(li);
+                    });
+                    container.appendChild(monthlyList);
+                }
+            }
+
+            // Renderiza as duas seções de histórico
+            renderSection(scheduledWalks, scheduledList, 'scheduled');
+            renderSection(completedWalks, activeList, 'completed');
+        }
+
+        // Função para preencher os campos de data e hora com os valores atuais
+        function setInitialDateTime() {
+            const today = new Date();
+            // Pega o ano, mês e dia da data local
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            
+            // Pega a hora e os minutos da hora local
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            // Define os valores dos inputs com a data e hora local
+            dataInput.value = `${year}-${month}-${day}`;
+            timeInput.value = `${hours}:${minutes}`;
+        }
+        setInitialDateTime();
+
+        // Adiciona funcionalidade para abrir o seletor de data/hora
+        document.querySelectorAll('.input-group .icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                const input = e.target.closest('.input-group').querySelector('input');
+                input.showPicker();
+            });
+        });
+
+        // Event listener para o botão de Agendar
+        scheduleButton.addEventListener('click', () => {
+            const dataSelecionada = dataInput.value;
+            const horaSelecionada = timeInput.value;
+            
+            // Cria um objeto Date para o horário selecionado
+            const selectedDateTime = new Date(`${dataSelecionada}T${horaSelecionada}`);
+            const now = new Date();
+            
+            // Calcula o tempo mínimo permitido (agora + 10 minutos)
+            const minAllowedTime = new Date(now.getTime() + 10 * 60000);
+
+            if (dataSelecionada && horaSelecionada) {
+                // Verifica se o tempo selecionado é menor que o tempo mínimo permitido
+                if (selectedDateTime.getTime() < minAllowedTime.getTime()) {
+                    messageBox.textContent = 'Não é possível agendar um passeio para menos de 10 minutos a partir de agora.';
+                    messageBox.style.backgroundColor = '#ffcccc';
+                    messageBox.style.color = '#cc0000';
+                    messageBox.style.display = 'block';
+                    return;
+                }
+
+                const historyItem = {
+                    action: 'Passeio agendado',
+                    date: dataSelecionada,
+                    time: horaSelecionada,
+                    timestamp: new Date().getTime()
+                };
+                scheduledWalks.push(historyItem);
+                renderHistory();
+                messageBox.textContent = `Passeio agendado para ${formatDate(dataSelecionada)} às ${horaSelecionada}!`;
+                messageBox.style.backgroundColor = '#e6ffed';
+                messageBox.style.color = '#1a5e2b';
+                messageBox.style.display = 'block';
+            } else {
+                messageBox.textContent = 'Por favor, selecione uma data e hora.';
+                messageBox.style.backgroundColor = '#ffcccc';
+                messageBox.style.color = '#cc0000';
+                messageBox.style.display = 'block';
+            }
+        });
+
+        // Event listener para o botão Iniciar Agora
+        startNowButton.addEventListener('click', () => {
+            currentWalkStartTimestamp = new Date().getTime();
+            messageBox.textContent = `Passeio iniciado! Divirta-se.`;
+            messageBox.style.backgroundColor = '#e6ffed';
+            messageBox.style.color = '#1a5e2b';
+            messageBox.style.display = 'block';
+
+            // Desabilita os botões de agendar e iniciar
+            scheduleButton.disabled = true;
+            startNowButton.disabled = true;
+            // Habilita o botão de finalizar
+            finalizarButton.disabled = false;
+        });
+        
+        // Event listener para o botão Finalizar Passeio
+        finalizarButton.addEventListener('click', () => {
+            if (currentWalkStartTimestamp) {
+                const endTimestamp = new Date().getTime();
+                const durationInMinutes = Math.floor((endTimestamp - currentWalkStartTimestamp) / 60000);
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const dataAtual = `${year}-${month}-${day}`;
+
+                const historyItem = {
+                    action: 'Passeio concluido',
+                    date: dataAtual,
+                    durationInMinutes: durationInMinutes,
+                    timestamp: endTimestamp
+                };
+                completedWalks.push(historyItem);
+                
+                messageBox.textContent = `Passeio concluído em ${formatDate(dataAtual)} com duração de ${durationInMinutes} minutos!`;
+                messageBox.style.backgroundColor = '#e6f3ff';
+                messageBox.style.color = '#00529b';
+                messageBox.style.display = 'block';
+                
+                currentWalkStartTimestamp = null;
+
+                // Reabilita os botões de agendar e iniciar
+                scheduleButton.disabled = false;
+                startNowButton.disabled = false;
+                // Desabilita o botão de finalizar
+                finalizarButton.disabled = true;
+
+                renderHistory();
+            } else {
+                messageBox.textContent = 'Por favor, inicie um passeio antes de finalizá-lo.';
+                messageBox.style.backgroundColor = '#ffcccc';
+                messageBox.style.color = '#cc0000';
+                messageBox.style.display = 'block';
+            }
+        });
+
+        // Event listener para o novo botão 'Limpar Histórico'
+        clearHistoryButton.addEventListener('click', () => {
+            // Limpa as duas listas de histórico
+            scheduledWalks = [];
+            completedWalks = [];
+            renderHistory();
+            messageBox.textContent = 'Todo o histórico de passeios foi limpo!';
+            messageBox.style.backgroundColor = '#e6f3ff';
+            messageBox.style.color = '#00529b';
+            messageBox.style.display = 'block';
+        });
+        
+        // Inicia a verificação de passeios antigos a cada 30 segundos
+        walkCheckInterval = setInterval(renderHistory, 30000);
+        
+        // Limpa o intervalo quando a página for fechada para evitar vazamento de memória
+        window.addEventListener('beforeunload', () => {
+            clearInterval(walkCheckInterval);
+        });
+
+        // Renderiza o histórico inicial
+        renderHistory();
+    });
+</script>
+
+</body>
+</html>
