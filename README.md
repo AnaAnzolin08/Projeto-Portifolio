@@ -99,10 +99,10 @@ Ferramenta para validar a resposta da aplicação sob carga:
 
 ### Cenários de Teste K6
 
-- Validaçã de agendamento de múltiplos passeios
-- Teste de usabilidade do cronômetro
+- Validação de agendamento de múltiplos passeios
+- Teste de usabilidade
 - Verificação da persistência de dados no LocalStorage
-- Teste de performance com diferentes níveis de carga
+-
 
 ## Bugs Conhecidos
 
